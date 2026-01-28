@@ -64,23 +64,43 @@ async function register() {
 // --- CRUD DE TAREAS ---
 async function loadTasks() {
     const res = await fetch(`${API_URL}/tasks`, {
-        headers: { "Authorization": `Bearer ${token}` } // Envía el token para demostrar que tienes permiso de ver las tareas
+        headers: { "Authorization": `Bearer ${token}` }
     });
-    const tasks = await res.json(); // Recibe la lista de tareas de MongoDB
+    const tasks = await res.json();
     const list = document.getElementById("taskList");
-    list.innerHTML = ""; // Limpia la lista antes de volver a llenarla
+    list.innerHTML = ""; 
     
     tasks.forEach(task => {
-        // Por cada tarea, crea un elemento de lista con un botón de borrar
         list.innerHTML += `
             <li>
-                ${task.title}
-                <button onclick="deleteTask('${task._id}')" style="width:auto; background:red;">X</button>
+                <span id="title-${task._id}">${task.title}</span>
+                <div class="task-buttons">
+                    <button onclick="editTask('${task._id}', '${task.title}')" style="width:auto; background: #007bff; margin-right: 5px;">✎</button>
+                    <button onclick="deleteTask('${task._id}')" style="width:auto; background:red;">X</button>
+                </div>
             </li>
         `;
     });
 }
 
+async function editTask(id, oldTitle) {
+    // El prompt pide el nuevo nombre al usuario
+    const newTitle = prompt("Editar tarea:", oldTitle);
+    
+    // Si el usuario cancela o deja vacío, no hacemos nada
+    if (!newTitle || newTitle === oldTitle) return;
+
+    await fetch(`${API_URL}/tasks/${id}`, {
+        method: "PUT",
+        headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` 
+        },
+        body: JSON.stringify({ title: newTitle }) // Enviamos el nuevo título al backend
+    });
+    
+    loadTasks(); // Refrescamos la lista
+}
 async function createTask() {
     const title = document.getElementById("taskTitle").value; // Captura el nombre de la tarea (ej: "jamica")
     await fetch(`${API_URL}/tasks`, {

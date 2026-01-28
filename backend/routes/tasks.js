@@ -17,10 +17,21 @@ router.post('/', auth, async (req, res) => {
     res.json(newTask);
 });
 
-// 3. ACTUALIZAR una tarea (UPDATE)
+// 3. ACTUALIZAR una tarea (UPDATE Seguro)
 router.put('/:id', auth, async (req, res) => {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(task);
+    try {
+        // Buscamos la tarea por ID y verificamos que pertenezca al usuario logueado
+        const task = await Task.findOneAndUpdate(
+            { _id: req.params.id, user: req.user.id }, 
+            req.body, 
+            { new: true }
+        );
+        
+        if (!task) return res.status(404).json({ msg: "Tarea no encontrada o no autorizada" });
+        res.json(task);
+    } catch (err) {
+        res.status(500).send("Error al actualizar");
+    }
 });
 
 // 4. ELIMINAR una tarea (DELETE)
