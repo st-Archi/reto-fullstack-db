@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App Fullstack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="auth-container" class="container">
+        <div class="card login-card">
+            <h2>Bienvenido</h2>
+            <input type="text" id="username" placeholder="Usuario">
+            <input type="password" id="password" placeholder="Contraseña">
+            <div class="actions">
+                <button onclick="login()">Iniciar Sesión</button>
+                <button class="btn-secondary" onclick="register()">Registrarse</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-container" class="container hidden">
+        <div class="card main-card">
+            <header>
+                <h2>Mis Tareas</h2>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </header>
+            
+            <div class="task-input">
+                <input type="text" id="taskTitle" placeholder="Nueva tarea...">
+                <button onclick="createTask()">Agregar</button>
+            </div>
+
+            <ul id="taskList"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
